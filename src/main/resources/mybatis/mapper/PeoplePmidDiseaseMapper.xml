@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bioknow.datatransport.dao.PeoplePmidDiseaseMapper">
+        <resultMap type="com.bioknow.datatransport.model.PeoplePmidDisease" id="peoplePmidDiseaseMap">
+            <result property="id" column="id"/>
+            <result property="pmid" column="pmid"/>
+            <result property="ptEn" column="pt_en"/>
+            <result property="ptCn" column="pt_cn"/>
+            <result property="yearNum" column="year_num"/>
+            <result property="modifydate" column="modifydate"/>
+        </resultMap>
+        <insert id="updatePeoplePmidDisease">
+            insert into
+                `medai-rawdata-pubmed`.people_pmid_disease(pmid, pt_en, pt_cn, year_num, modifydate)
+              select pmid, pt_en, pt_cn, year_num, modifydate
+              from
+                `medai-data-mark`.people_pmid_disease
+              where modifydate
+                not between
+                      (select MIN(modifydate) from `medai-rawdata-pubmed`.people_pmid_disease)
+                and
+                      (select MAX(modifydate) from `medai-rawdata-pubmed`.people_pmid_disease);
+</insert>
+</mapper>
